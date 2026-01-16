@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import cors from "cors"; // ✅ ADD THIS
 
 import connectDB from "./config/db.js";
 
@@ -17,13 +18,32 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
+/* =======================
+   CORS CONFIG (IMPORTANT)
+======================= */
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173", // frontend dev
+      "https://ecommerce-backend-rotl.onrender.com", // backend prod
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
+// handle preflight requests
+app.options("*", cors());
+
 app.use(express.json());
 
 // 🔹 REQUIRED for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ SERVE ROOT FOLDER AS FRONTEND
+// (optional) static serving — harmless but not needed for API-only backend
 app.use(express.static(__dirname));
 
 // API routes
