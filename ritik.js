@@ -63,6 +63,7 @@ app.listen(PORT, () => {
 });*/
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors"; // <--- ADDED THIS
 
 import connectDB from "./config/db.js";
 
@@ -78,6 +79,15 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
+// --- START CORS CONFIGURATION ---
+// This allows your frontend to talk to this backend
+app.use(cors({
+  origin: ["http://localhost:5173"], // Only allows your local computer for now
+  credentials: true
+}));
+// --- END CORS CONFIGURATION ---
+
 app.use(express.json());
 
 // API routes
